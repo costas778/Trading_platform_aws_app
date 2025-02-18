@@ -1,0 +1,27 @@
+{
+  "agent": {
+    "metrics_collection_interval": 60,
+    "run_as_user": "root"
+  },
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "/var/log/containers/*.log",
+            "log_group_name": "/aws/containerinsights/{cluster_name}/application",
+            "log_stream_name": "{container_instance_id}"
+          }
+        ]
+      }
+    }
+  },
+  "metrics": {
+    "metrics_collected": {
+      "kubernetes": {
+        "cluster_name": "${CLUSTER_NAME}",
+        "metrics_collection_interval": 60
+      }
+    }
+  }
+}

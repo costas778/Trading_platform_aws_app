@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-management
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: order-management
+  template:
+    metadata:
+      labels:
+        app: order-management
+    spec:
+      containers:
+      - name: order-management
+        image: ${ECR_REPOSITORY_PREFIX}-order-management:latest
+        ports:
+        - containerPort: 8081
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: ${DEPLOY_ENV}
+        - name: AWS_KMS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-kms-keys
+              key: order-management-key
+        volumeMounts:
+        - name: ssl-cert
+          mountPath: "/etc/ssl/certs"
+          readOnly: true
+      volumes:
+      - name: ssl-cert
+        secret:
+          secretName: trading-platform-certs

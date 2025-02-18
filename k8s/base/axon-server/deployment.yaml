@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: axon-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: axon-server
+  template:
+    metadata:
+      labels:
+        app: axon-server
+    spec:
+      containers:
+      - name: axon-server
+        image: ${ECR_REPOSITORY_PREFIX}-axon-server:latest
+        ports:
+        - containerPort: 8024
+        - containerPort: 8124

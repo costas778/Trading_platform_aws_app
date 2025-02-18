@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: message-queue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: message-queue
+  template:
+    metadata:
+      labels:
+        app: message-queue
+    spec:
+      containers:
+      - name: message-queue
+        image: ${ECR_REPOSITORY_PREFIX}-message-queue:latest
+        ports:
+        - containerPort: 8098
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: ${DEPLOY_ENV}
+        - name: AWS_KMS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-kms-keys
+              key: message-queue-key
+        volumeMounts:
+        - name: ssl-cert
+          mountPath: "/etc/ssl/certs"
+          readOnly: true
+      volumes:
+      - name: ssl-cert
+        secret:
+          secretName: trading-platform-certs

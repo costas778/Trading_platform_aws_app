@@ -1,0 +1,6 @@
+aws_region       = "us-east-1"
+project_name     = "abc-trading"
+vpc_cidr         = "10.0.0.0/16"
+database_name    = "tradingdb"
+database_username = "admin"
+bucket_name      = "trading-data-prod"

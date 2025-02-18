@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reporting
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: reporting
+  template:
+    metadata:
+      labels:
+        app: reporting
+    spec:
+      containers:
+      - name: reporting
+        image: ${ECR_REPOSITORY_PREFIX}-reporting:latest
+        ports:
+        - containerPort: 8092
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: ${DEPLOY_ENV}
+        - name: AWS_KMS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-kms-keys
+              key: reporting-key
+        volumeMounts:
+        - name: ssl-cert
+          mountPath: "/etc/ssl/certs"
+          readOnly: true
+      volumes:
+      - name: ssl-cert
+        secret:
+          secretName: trading-platform-certs

@@ -1,0 +1,18 @@
+# Sensitive files
+set-env.sh
+.env
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars.backup
+.terraform.lock.hcl
+
+# Backup files
+*.bak
+*~
+*.swp
+
+# Text
+*.txt

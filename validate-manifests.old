@@ -1,0 +1,37 @@
+Usage:
+
+# Make the script executable
+chmod +x validate-manifests.sh
+
+# Check references without making changes
+./validate-manifests.sh
+
+# Automatically fix missing references
+./validate-manifests.sh --fix
+
+Copy
+
+Insert at cursor
+This script will:
+
+Define mappings between shell scripts and their expected manifest references
+
+Check if all required manifests exist
+
+Verify if scripts properly reference their manifests
+
+Provide suggestions for missing references
+
+Optionally fix missing references automatically
+
+The script can be extended by:
+
+Adding more script-to-manifest mappings in the MANIFEST_MAPPINGS array
+
+Adding more sophisticated manifest handling based on file type
+
+Adding validation for specific manifest content
+
+Adding checks for correct kubectl/aws commands
+
+Would you like me to explain any specific part of this validation script or add additional functionality?

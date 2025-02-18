@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: audit
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: audit
+  template:
+    metadata:
+      labels:
+        app: audit
+    spec:
+      containers:
+      - name: audit
+        image: ${ECR_REPOSITORY_PREFIX}-audit:latest
+        ports:
+        - containerPort: 8093
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: ${DEPLOY_ENV}
+        - name: AWS_KMS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-kms-keys
+              key: audit-key
+        volumeMounts:
+        - name: ssl-cert
+          mountPath: "/etc/ssl/certs"
+          readOnly: true
+      volumes:
+      - name: ssl-cert
+        secret:
+          secretName: trading-platform-certs

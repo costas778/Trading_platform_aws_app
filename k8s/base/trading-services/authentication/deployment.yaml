@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentication
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: authentication
+  template:
+    metadata:
+      labels:
+        app: authentication
+    spec:
+      containers:
+      - name: authentication
+        image: ${ECR_REPOSITORY_PREFIX}-authentication:latest
+        ports:
+        - containerPort: 8087
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: ${DEPLOY_ENV}
+        - name: AWS_KMS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-kms-keys
+              key: authentication-key
+        volumeMounts:
+        - name: ssl-cert
+          mountPath: "/etc/ssl/certs"
+          readOnly: true
+      volumes:
+      - name: ssl-cert
+        secret:
+          secretName: trading-platform-certs

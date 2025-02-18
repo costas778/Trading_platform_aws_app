@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trade-execution
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: trade-execution
+  template:
+    metadata:
+      labels:
+        app: trade-execution
+    spec:
+      containers:
+      - name: trade-execution
+        image: ${ECR_REPOSITORY_PREFIX}-trade-execution:latest
+        ports:
+        - containerPort: 8082
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: ${DEPLOY_ENV}
+        - name: AWS_KMS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-kms-keys
+              key: trade-execution-key
+        volumeMounts:
+        - name: ssl-cert
+          mountPath: "/etc/ssl/certs"
+          readOnly: true
+      volumes:
+      - name: ssl-cert
+        secret:
+          secretName: trading-platform-certs
