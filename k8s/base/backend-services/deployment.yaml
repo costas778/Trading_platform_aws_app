@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: ${ECR_REPOSITORY_PREFIX}-backend:latest
+        image: ${ECR_REPOSITORY_PREFIX}/backend:latest
         ports:
         - containerPort: 8080
         env:

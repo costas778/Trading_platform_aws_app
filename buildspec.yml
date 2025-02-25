@@ -11,15 +11,15 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker images...
-      - docker build -t ${ECR_REPOSITORY_PREFIX}-frontend:${IMAGE_TAG} ./docker/frontend
-      - docker build -t ${ECR_REPOSITORY_PREFIX}-backend:${IMAGE_TAG} ./docker/backend
-      - docker build -t ${ECR_REPOSITORY_PREFIX}-axon-server:${IMAGE_TAG} ./docker/axon-server
+      - docker build -t ${ECR_REPOSITORY_PREFIX}/frontend:${IMAGE_TAG} ./docker/frontend
+      - docker build -t ${ECR_REPOSITORY_PREFIX}/backend:${IMAGE_TAG} ./docker/backend
+      - docker build -t ${ECR_REPOSITORY_PREFIX}/axon-server:${IMAGE_TAG} ./docker/axon-server
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
-      - docker push ${ECR_REPOSITORY_PREFIX}-frontend:${IMAGE_TAG}
-      - docker push ${ECR_REPOSITORY_PREFIX}-backend:${IMAGE_TAG}
-      - docker push ${ECR_REPOSITORY_PREFIX}-axon-server:${IMAGE_TAG}
+      - docker push ${ECR_REPOSITORY_PREFIX}/frontend:${IMAGE_TAG}
+      - docker push ${ECR_REPOSITORY_PREFIX}/backend:${IMAGE_TAG}
+      - docker push ${ECR_REPOSITORY_PREFIX}/axon-server:${IMAGE_TAG}
       - echo Writing image definitions file...
-      - printf '{"ImageURI":"%s"}' ${ECR_REPOSITORY_PREFIX}-frontend:${IMAGE_TAG} > imageDefinitions.json
+      - printf '{"ImageURI":"%s"}' ${ECR_REPOSITORY_PREFIX}/frontend:${IMAGE_TAG} > imageDefinitions.json

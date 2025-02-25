@@ -1,0 +1,69 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: trading-platform-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-2-2017-01
+    alb.ingress.kubernetes.io/backend-protocol: HTTPS
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+spec:
+  ingressClassName: alb
+  tls:
+  - hosts:
+    - "*.abc-trading-dev.com"
+    secretName: trading-platform-certs
+  rules:
+  - host: api.abc-trading-dev.com
+    http:
+      paths:
+      - path: /auth
+        pathType: Prefix
+        backend:
+          service:
+            name: authentication
+            port:
+              number: 8080
+      - path: /users
+        pathType: Prefix
+        backend:
+          service:
+            name: user-management
+            port:
+              number: 8080
+      - path: /trading
+        pathType: Prefix
+        backend:
+          service:
+            name: trade-execution
+            port:
+              number: 8080
+      - path: /market
+        pathType: Prefix
+        backend:
+          service:
+            name: market-data
+            port:
+              number: 8080
+  - host: app.abc-trading-dev.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-gateway
+            port:
+              number: 80
+  - host: axon.abc-trading-dev.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: message-queue
+            port:
+              number: 8024

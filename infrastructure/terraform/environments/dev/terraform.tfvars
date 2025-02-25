@@ -4,7 +4,7 @@ environment         = "dev"
 project_name        = "abc-trading"
 cluster_name        = "abc-trading-dev"
 vpc_cidr            = "10.0.0.0/16"
-database_name       = "db_dev_211125333901"
+database_name       = "db_dev_637423471201"
 database_username   = "dbmaster"
 
 availability_zones  = ["us-east-1a", "us-east-1b", "us-east-1c"]

@@ -18,9 +18,9 @@ module "eks" {
   environment        = var.environment
   kubernetes_version = var.kubernetes_version
   subnet_ids        = [
-    "subnet-057c6d0677ddc3061",  # us-east-1a
-    "subnet-02f216785183d5e6a",   # us-east-1b
-    "subnet-0e0738f3fd411cff5"   # us-east-1c
+    "subnet-083f2c6f799ce28d2",  # us-east-1a
+    "subnet-00dbbfe91bc52065e",  # us-east-1b
+    "subnet-0c7193c65c67aed35"   # us-east-1c
   ]
   node_desired_size = var.node_desired_size
   node_max_size     = var.node_max_size

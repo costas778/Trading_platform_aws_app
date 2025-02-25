@@ -143,7 +143,8 @@ BACKEND
     rm -f .terraform.lock.hcl
 
     # Initialize with reconfigure flag
-    terraform init -reconfigure
+    #terraform init -reconfigure
+    terraform init -migrate-state
 
     # Create workspace if it doesn't exist and select it
     terraform workspace select "${DEPLOY_ENV}" || terraform workspace new "${DEPLOY_ENV}"

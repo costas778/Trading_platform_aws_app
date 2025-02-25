@@ -2,34 +2,45 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: quote-service
+  namespace: default
 spec:
+  progressDeadlineSeconds: 600
   replicas: 3
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app: quote-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
       labels:
         app: quote-service
     spec:
       containers:
-      - name: quote-service
-        image: ${ECR_REPOSITORY_PREFIX}-quote-service:latest
-        ports:
-        - containerPort: 8090
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          value: ${DEPLOY_ENV}
-        - name: AWS_KMS_KEY_ID
-          valueFrom:
-            secretKeyRef:
-              name: aws-kms-keys
-              key: quote-service-key
-        volumeMounts:
-        - name: ssl-cert
-          mountPath: "/etc/ssl/certs"
-          readOnly: true
-      volumes:
-      - name: ssl-cert
-        secret:
-          secretName: trading-platform-certs
+        - env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: ${DEPLOY_ENV}
+          image: ${ECR_REPOSITORY_PREFIX}/quote-service:latest
+          imagePullPolicy: Always
+          name: quote-service
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

@@ -2,34 +2,54 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api-gateway
+  namespace: default
 spec:
+  progressDeadlineSeconds: 600
   replicas: 3
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app: api-gateway
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
+      creationTimestamp: null
       labels:
         app: api-gateway
     spec:
       containers:
-      - name: api-gateway
-        image: ${ECR_REPOSITORY_PREFIX}-api-gateway:latest
-        ports:
-        - containerPort: 8097
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          value: ${DEPLOY_ENV}
-        - name: AWS_KMS_KEY_ID
-          valueFrom:
-            secretKeyRef:
-              name: aws-kms-keys
-              key: api-gateway-key
-        volumeMounts:
-        - name: ssl-cert
-          mountPath: "/etc/ssl/certs"
-          readOnly: true
+        - env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: ${DEPLOY_ENV}
+            - name: AWS_KMS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: api-gateway-key
+                  name: aws-kms-keys
+          image: ${ECR_REPOSITORY_PREFIX}/api-gateway:latest
+          imagePullPolicy: Always
+          name: api-gateway
+          ports:
+            - containerPort: 8097
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /etc/ssl/certs
+              name: ssl-cert
+              readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
       volumes:
-      - name: ssl-cert
-        secret:
-          secretName: trading-platform-certs
+        - name: ssl-cert
+          secret:
+            defaultMode: 420
+            secretName: trading-platform-certs

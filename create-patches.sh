@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# First generate and create the SSL certificates secret
+echo "Generating SSL certificates..."
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout tls.key -out tls.crt \
+    -subj "/CN=*.your-domain.com"
+
+echo "Creating Kubernetes secret for SSL certificates..."
+kubectl create secret tls trading-platform-certs \
+    --cert=tls.crt \
+    --key=tls.key \
+    --dry-run=client -o yaml | kubectl apply -f -
+
+# Clean up certificate files
+rm tls.key tls.crt
+
 # Read deployments from kubectl
 deployments=$(kubectl get deployments -o custom-columns=":metadata.name" --no-headers)
 

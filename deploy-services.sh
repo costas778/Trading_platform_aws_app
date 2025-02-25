@@ -9,10 +9,4 @@ for service in api-gateway audit authentication authorization cache compliance l
     kubectl apply -f "k8s/base/trading-services/$service/service.yaml"
 done
 
-# Verify deployments
-echo "Verifying deployments..."
-kubectl get deployments --all-namespaces
-echo "Verifying services..."
-kubectl get services --all-namespaces
-echo "Verifying pods..."
-kubectl get pods --all-namespaces
+

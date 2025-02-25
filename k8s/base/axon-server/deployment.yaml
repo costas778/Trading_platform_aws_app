@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: axon-server
-        image: ${ECR_REPOSITORY_PREFIX}-axon-server:latest
+        image: ${ECR_REPOSITORY_PREFIX}/axon-server:latest
         ports:
         - containerPort: 8024
         - containerPort: 8124
